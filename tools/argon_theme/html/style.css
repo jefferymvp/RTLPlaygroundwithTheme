@@ -1,0 +1,987 @@
+h1, h2, h3 {
+  color: #226;
+}
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 12%;
+  height: calc(100% - 50px);
+  position: fixed;
+  top: 50px;
+  overflow: auto;
+}
+
+li a {
+  background-color: #aaf;
+  display: block;
+  color: #000;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+/* Change the link color on hover */
+li a:hover {
+  background-color: #226;
+  color: white;
+}
+
+table, th, td {
+  border: 1px solid #226;
+  padding: 8px;
+}
+table {
+  border-collapse: collapse;
+  width: 60%;
+}
+
+td {
+  text-align: right;
+}
+
+input[type=submit] { padding: 8px 16px;background-color:#aaf;color:#000; margin-bottom: 2em;border-radius: 15px;width: 100%;}
+input[type=submit]:hover { background-color: #226; color: white;}
+input[type=file] { padding: 8px 16px;background-color:#aaf;color:#000; margin-bottom: 2em;border-radius: 15px;width: 60%;}
+input[type=file]:hover { background-color: #226; color: white;}
+b
+button {padding: 8px; background-color:#99f; color:#000;border-radius: 15px;}
+button:hover { background-color: #226; color: white;}
+.action{padding: 8px 16px;margin-top: 2em;margin-right: 3em; background-color: #aaf;color: #000;border-radius: 15px; width: 100%;}
+.action:hover { background-color: #226; color: white;}
+
+/* Port selection inputs */
+.psel {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin-top: 1em;
+}
+.psel + img {
+  cursor: pointer;
+  opacity: 0.4;
+  padding: 8px;
+}
+.psel:checked + img {
+/*  outline: 2px solid #f00;*/
+  opacity: 1.0;
+}
+object, img {
+ margin: 0.5em 0.5em;
+}
+.cbgroup {
+  display: inline-block;
+  text-align: center;
+}
+.cbgroup label {
+  display: block;
+}
+
+.disabled{ opacity: .4; background-color: #f88; color: #000}
+.isSFP{ opacity: .4; background-color: #660;}
+.isNOK{ color: #900;}
+.isOK{ color: #090;}
+.ip{padding:8px 16px;margin-bottom: 1em;margin-left: 1em}
+.rotext{display:inline-block;padding:8px 16px;margin-bottom: 1em;margin-left: 1em}
+.row {display: flex;}
+.rcol {flex: 90%;}
+.lcol {flex: 10%;}
+
+/* Login page */
+.login_page {margin: 0; padding: 0; background: #aaf; height: 100vh; overflow: hidden;}
+.center{
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -40% );
+  width: 500px; height: 400px;
+  background: white;
+  border-radius: 2px;
+}
+
+.center h1 {
+  text-align: center;
+  border-bottom: 1px solid silver;
+}
+
+.center form {
+padding: 0 60px;
+box-sizing: border-box;
+}
+form .txt_field{
+position: relative;
+border-bottom: 2px solid #adadad;
+margin: 30px 0;
+}
+.txt_field input { width: 100%; padding: 0 5px; height: 40px; font-size: 16px; border: none;
+  background: none;
+  outline: none;}
+.txt_field label { position: absolute; top: 50%; left: 5px; color:#adadad; transform: translateY(-50%);
+  font-size: 16px; pointer-events: none;transition: .5s; }
+.txt_field span::before{ content:''; position: absolute; top: 40px; left:0; width: 100%; height: 2px; background: #aaf;}
+.txt_field input:focus ~ label,
+.txt_field input:valid ~ label { top: -5px; color: #aaf; }
+
+.tooltip {
+  position: relative; display: inline-block; cursor: pointer;
+}
+
+
+.tooltiptext {
+  visibility: hidden;
+  width: 260px;
+  background-color: #226;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 80%;
+  left: 50%;
+  margin-left: -130px;
+}
+
+.tooltiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+.tt_table {
+  width: 100%; font-size:90%;
+}
+.tt_table td {
+  text-align: left;
+}
+select { text-align-last: right; font-family: monospace}
+option { direction: rtl; font-family: sans-serif}
+#vlanTable td { text-align: left; }
+
+.l2sort{cursor:pointer;user-select:none}
+.l2sort:hover{text-decoration:underline}
+.l2arrow{opacity:0.55;font-size:0.85em}
+.l2filter{width:100%;box-sizing:border-box;font-weight:normal;font-size:0.9em}
+
+/* ==========================================================================
+   OpenWrt Argon Modern Theme for RTLPlayground (SPA Edition)
+   Strictly scoped under [data-theme="argon"]
+   ========================================================================== */
+
+#topbar {
+  display: none;
+}
+
+[data-theme="argon"] body {
+  background-color: #f1f3f7;
+  color: #333333;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Argon Top Bar */
+[data-theme="argon"] #topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #4834d4, #686de0);
+  color: #ffffff;
+  padding: 0 24px;
+  height: 52px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+[data-theme="argon"] .topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.15em;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+[data-theme="argon"] .topbar-brand svg,
+[data-theme="argon"] .topbar-brand img {
+  height: 28px;
+  width: auto;
+  margin: 0;
+}
+
+[data-theme="argon"] .topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+[data-theme="argon"] .theme-select-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9em;
+}
+
+[data-theme="argon"] #topbar .theme-select {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.9em;
+  cursor: pointer;
+  outline: none;
+  backdrop-filter: blur(4px);
+  direction: ltr !important;
+  text-align: left !important;
+  text-align-last: left !important;
+  min-width: 95px;
+}
+
+[data-theme="argon"] #topbar .theme-select option {
+  background: #2c2c54 !important;
+  color: #ffffff !important;
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+[data-theme="argon"] .logout-btn {
+  background: rgba(235, 77, 75, 0.9);
+  color: #ffffff !important;
+  padding: 5px 14px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 0.85em;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+[data-theme="argon"] .logout-btn:hover {
+  background: #ff5252;
+  box-shadow: 0 2px 8px rgba(235, 77, 75, 0.4);
+}
+
+/* Argon Sidebar */
+[data-theme="argon"] #sidebar {
+  background: #ffffff;
+  border-right: 1px solid #e1e8ed;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="argon"] #sidebar ul {
+  background: #ffffff;
+  top: 52px;
+  height: calc(100% - 52px);
+  width: 210px !important;
+  padding-top: 12px;
+  border-right: 1px solid #e2e8f0;
+  box-sizing: border-box;
+}
+
+[data-theme="argon"] #sidebar li a {
+  background-color: transparent;
+  color: #4b5563;
+  padding: 10px 20px;
+  font-size: 0.92em;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+[data-theme="argon"] #sidebar li a:hover {
+  background-color: #f1f3f7;
+  color: #4834d4;
+  border-left-color: #4834d4;
+}
+
+[data-theme="argon"] #sidebar li a.active {
+  background-color: #f3f0ff;
+  color: #4834d4;
+  font-weight: 600;
+  border-left-color: #4834d4;
+}
+
+/* Argon Ports Panel & Header (Proper Gutter Separation) */
+[data-theme="argon"] #ports {
+  margin-left: 236px !important;
+  margin-right: 24px !important;
+  padding: 16px 24px 0 24px !important;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+/* Argon SPA Section Pages (Cards with Clean Gutter) */
+[data-theme="argon"] .page {
+  margin-left: 236px !important;
+  margin-right: 24px !important;
+  margin-top: 16px !important;
+  margin-bottom: 24px !important;
+  padding: 24px 30px !important;
+  background: #ffffff !important;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e9f2;
+  height: auto !important;
+  min-height: calc(100vh - 200px);
+  box-sizing: border-box;
+}
+
+[data-theme="argon"] .page h1 {
+  color: #2c3e50;
+  font-size: 1.5em;
+  margin-top: 0;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f1f3f7;
+  font-weight: 600;
+}
+
+[data-theme="argon"] .page h2 {
+  color: #34495e;
+  font-size: 1.2em;
+  margin-top: 24px;
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+
+/* Argon Tables */
+[data-theme="argon"] table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #e5e9f2;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 100% !important;
+  max-width: 100%;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+[data-theme="argon"] th {
+  background-color: #f8fafc;
+  color: #475569;
+  font-weight: 600;
+  padding: 12px 14px;
+  border: none;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.9em;
+  text-align: left !important;
+}
+
+[data-theme="argon"] td {
+  padding: 10px 14px;
+  border: none;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  font-size: 0.9em;
+  text-align: left !important;
+}
+
+/* Argon Overview Page Info Table (#infoTable) */
+[data-theme="argon"] #infoTable {
+  max-width: 800px !important;
+  margin-top: 10px !important;
+}
+
+[data-theme="argon"] #infoTable th {
+  text-align: left !important;
+  padding: 12px 20px !important;
+  font-size: 15px !important;
+  background-color: #f8fafc !important;
+}
+
+[data-theme="argon"] #infoTable td {
+  text-align: left !important;
+  padding: 12px 20px !important;
+  font-size: 14px !important;
+}
+
+[data-theme="argon"] #infoTable td:first-child {
+  width: 260px !important;
+  font-weight: 500 !important;
+  color: #475569 !important;
+  text-align: left !important;
+}
+
+[data-theme="argon"] #infoTable td:last-child {
+  color: #0f172a !important;
+  text-align: left !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+[data-theme="argon"] tr:last-child td {
+  border-bottom: none;
+}
+
+[data-theme="argon"] tr:hover td {
+  background-color: #f8fafc;
+}
+
+/* High Contrast State Row Colors (Replacing opaque blurry styles) */
+[data-theme="argon"] .disabled {
+  opacity: 1 !important;
+  background-color: #fee2e2 !important;
+  color: #991b1b !important;
+  font-weight: 500;
+}
+
+[data-theme="argon"] .isSFP {
+  opacity: 1 !important;
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+  font-weight: 500;
+}
+
+[data-theme="argon"] .isOK {
+  color: #16a34a !important;
+  font-weight: 600;
+}
+
+[data-theme="argon"] .isNOK {
+  color: #dc2626 !important;
+  font-weight: 600;
+}
+
+/* Argon Buttons & Inputs */
+[data-theme="argon"] button,
+[data-theme="argon"] .action,
+[data-theme="argon"] input[type=submit] {
+  background: linear-gradient(135deg, #4834d4, #686de0);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 0.9em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(72, 52, 212, 0.25);
+}
+
+[data-theme="argon"] button:hover,
+[data-theme="argon"] .action:hover,
+[data-theme="argon"] input[type=submit]:hover {
+  background: linear-gradient(135deg, #3c2bb7, #5358cb);
+  box-shadow: 0 4px 12px rgba(72, 52, 212, 0.35);
+}
+
+/* Argon Form Controls & System Rows Layout */
+[data-theme="argon"] .row {
+  display: flex !important;
+  align-items: center !important;
+  margin-top: 0 !important;
+  margin-bottom: 18px !important;
+  min-height: 38px !important;
+}
+
+[data-theme="argon"] .lcol {
+  flex: 0 0 140px !important;
+  min-width: 140px !important;
+  width: 140px !important;
+  color: #334155 !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  text-align: left !important;
+  line-height: 38px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+[data-theme="argon"] .rcol {
+  flex: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+[data-theme="argon"] .row input,
+[data-theme="argon"] .row select,
+[data-theme="argon"] #hostname,
+[data-theme="argon"] #ip,
+[data-theme="argon"] #netmask,
+[data-theme="argon"] #gw,
+[data-theme="argon"] #lang-select,
+[data-theme="argon"] #mgmtvlan {
+  width: 280px !important;
+  min-width: 280px !important;
+  max-width: 280px !important;
+  height: 38px !important;
+  line-height: 38px !important;
+  padding: 0 12px !important;
+  font-size: 14px !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  background-color: #ffffff !important;
+  color: #1e293b !important;
+  box-sizing: border-box !important;
+  direction: ltr !important;
+  text-align: left !important;
+  text-align-last: left !important;
+  margin: 0 !important;
+  outline: none !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+
+[data-theme="argon"] .row select option {
+  direction: ltr !important;
+  color: #1e293b !important;
+  background-color: #ffffff !important;
+}
+
+[data-theme="argon"] .row input:focus,
+[data-theme="argon"] .row select:focus,
+[data-theme="argon"] textarea:focus {
+  border-color: #4834d4 !important;
+  box-shadow: 0 0 0 3px rgba(72, 52, 212, 0.15) !important;
+}
+
+[data-theme="argon"] .row span#model,
+[data-theme="argon"] .row .rotext {
+  font-size: 14px !important;
+  color: #334155 !important;
+  font-weight: 600 !important;
+  line-height: 38px !important;
+  padding: 0 12px !important;
+  margin: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 38px !important;
+}
+
+/* System Action Buttons & Hints */
+[data-theme="argon"] #system-tab .action,
+[data-theme="argon"] #system-tab input.action,
+[data-theme="argon"] #ip_sub,
+[data-theme="argon"] #flash_sub {
+  width: 280px !important;
+  min-width: 280px !important;
+  max-width: 280px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  padding: 0 16px !important;
+  margin-top: 10px !important;
+  margin-bottom: 22px !important;
+  border-radius: 6px !important;
+  box-sizing: border-box !important;
+  display: block !important;
+}
+
+[data-theme="argon"] #advanced-tab .action {
+  width: 280px !important;
+  min-width: 280px !important;
+  max-width: 280px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  padding: 0 16px !important;
+  margin-top: 8px !important;
+  margin-bottom: 12px !important;
+  display: block !important;
+}
+
+[data-theme="argon"] #advanced-tab textarea {
+  width: 100% !important;
+  max-width: 680px !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  padding: 10px 14px !important;
+  font-family: monospace !important;
+  font-size: 13px !important;
+  background: #f8fafc !important;
+  color: #1e293b !important;
+  box-sizing: border-box !important;
+  margin-top: 8px !important;
+  margin-bottom: 12px !important;
+}
+
+[data-theme="argon"] #console-tab input#console_cmd {
+  height: 38px !important;
+  line-height: 38px !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  padding: 0 12px !important;
+  font-size: 14px !important;
+  box-sizing: border-box !important;
+  margin-right: 12px !important;
+  vertical-align: middle !important;
+}
+
+[data-theme="argon"] #console-tab input#cmd_sub {
+  height: 38px !important;
+  line-height: 38px !important;
+  padding: 0 16px !important;
+  vertical-align: middle !important;
+}
+
+[data-theme="argon"] #console-tab pre#console_out {
+  background: #0f172a !important;
+  color: #38bdf8 !important;
+  border: 1px solid #334155 !important;
+  border-radius: 8px !important;
+  padding: 14px !important;
+  font-family: "Cascadia Code", Consolas, Monaco, monospace !important;
+}
+
+[data-theme="argon"] #system-tab span[data-i18n="sys_ip_note"],
+[data-theme="argon"] #system-tab span[data-i18n="sys_save_label"] {
+  display: block !important;
+  color: #64748b !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  margin-top: 14px !important;
+  margin-bottom: 4px !important;
+}
+
+/* Argon System Tabs */
+[data-theme="argon"] .tab-bar {
+  border-bottom: 2px solid #e2e8f0 !important;
+  margin-left: 0 !important;
+  padding: 0 !important;
+  gap: 8px !important;
+  margin-bottom: 24px !important;
+}
+
+[data-theme="argon"] button.tab-btn,
+[data-theme="argon"] .tab-btn {
+  background: #f1f5f9 !important;
+  background-image: none !important;
+  color: #475569 !important;
+  border: 1px solid #e2e8f0 !important;
+  border-bottom: none !important;
+  border-radius: 8px 8px 0 0 !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  padding: 10px 24px !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+[data-theme="argon"] button.tab-btn:hover,
+[data-theme="argon"] .tab-btn:hover {
+  background: #e2e8f0 !important;
+  background-image: none !important;
+  color: #1e293b !important;
+}
+
+[data-theme="argon"] button.tab-btn.active,
+[data-theme="argon"] .tab-btn.active {
+  background: linear-gradient(135deg, #4834d4, #686de0) !important;
+  color: #ffffff !important;
+  border-color: #4834d4 !important;
+  font-weight: 600 !important;
+  box-shadow: 0 -2px 8px rgba(72, 52, 212, 0.2) !important;
+}
+
+/* ==========================================================================
+   Argon Firmware Update Page Styles (#page-update)
+   ========================================================================== */
+[data-theme="argon"] #page-update {
+  max-width: 600px !important;
+}
+
+[data-theme="argon"] #page-update span[data-i18n="update_instruction"] {
+  display: block !important;
+  color: #475569 !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  margin-bottom: 16px !important;
+}
+
+[data-theme="argon"] #page-update input[type=file],
+[data-theme="argon"] input[type=file] {
+  display: block !important;
+  width: 320px !important;
+  min-width: 320px !important;
+  max-width: 320px !important;
+  height: 42px !important;
+  line-height: 26px !important;
+  padding: 6px 12px !important;
+  background-color: #f8fafc !important;
+  background-image: none !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  color: #334155 !important;
+  font-size: 13px !important;
+  box-sizing: border-box !important;
+  margin-top: 0 !important;
+  margin-bottom: 20px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+[data-theme="argon"] #page-update input[type=file]:hover,
+[data-theme="argon"] input[type=file]:hover {
+  background-color: #f1f5f9 !important;
+  background-image: none !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="argon"] #page-update input[type=submit] {
+  display: block !important;
+  width: 320px !important;
+  min-width: 320px !important;
+  max-width: 320px !important;
+  height: 42px !important;
+  line-height: 42px !important;
+  padding: 0 16px !important;
+  margin-top: 0 !important;
+  margin-bottom: 24px !important;
+  border-radius: 6px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  box-sizing: border-box !important;
+  text-align: center !important;
+}
+
+/* ==========================================================================
+   Argon Login Page Styles (Auto-mounted via main.js)
+   ========================================================================== */
+[data-theme="argon"].login_page,
+[data-theme="argon"] .login_page {
+  background: linear-gradient(135deg, #30336b, #130f40);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-theme="argon"] .center {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  width: 440px;
+  height: auto;
+  min-height: 380px;
+  padding-bottom: 30px;
+  position: relative;
+  transform: none;
+  top: auto;
+  left: auto;
+}
+
+[data-theme="argon"] .center h1 {
+  background: transparent;
+  color: #2c3e50;
+  font-size: 1.4em;
+  padding: 24px 0 16px 0;
+  border-bottom: 1px solid #edf2f7;
+  font-weight: 600;
+}
+
+/* Login Theme Selector Bar inside .center (Works in both Default and Argon) */
+.login-theme-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 14px 24px 0 24px;
+  font-size: 13px;
+  color: #475569;
+  gap: 8px;
+}
+
+.login-theme-bar label {
+  font-weight: 500;
+  color: #475569;
+}
+
+.login-theme-bar select,
+.login-theme-bar .theme-select {
+  padding: 4px 10px !important;
+  border-radius: 6px !important;
+  border: 1px solid #cbd5e1 !important;
+  background-color: #ffffff !important;
+  color: #1e293b !important;
+  font-size: 13px !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  cursor: pointer !important;
+  direction: ltr !important;
+  text-align: left !important;
+  text-align-last: left !important;
+  min-width: 95px !important;
+  height: 32px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.login-theme-bar select option,
+.login-theme-bar .theme-select option {
+  direction: ltr !important;
+  color: #1e293b !important;
+  background-color: #ffffff !important;
+  text-align: left !important;
+}
+
+[data-theme="argon"] .center form {
+  padding: 10px 40px 0 40px;
+}
+
+/* Argon Clean Single-Line Input Box (Label and Input on the same line) */
+[data-theme="argon"] .center .txt_field {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin: 28px 0 24px 0 !important;
+  border-bottom: none !important;
+  position: relative !important;
+}
+
+[data-theme="argon"] .center .txt_field span,
+[data-theme="argon"] .center .txt_field span::before {
+  display: none !important;
+}
+
+[data-theme="argon"] .center .txt_field label {
+  order: 1 !important;
+  position: static !important;
+  display: inline-block !important;
+  transform: none !important;
+  color: #334155 !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  white-space: nowrap !important;
+  pointer-events: auto !important;
+  min-width: 42px !important;
+}
+
+[data-theme="argon"] .center .txt_field input {
+  order: 2 !important;
+  flex: 1 !important;
+  width: auto !important;
+  box-sizing: border-box !important;
+  height: 42px !important;
+  padding: 8px 14px !important;
+  font-size: 15px !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  background-color: #f8fafc !important;
+  color: #1e293b !important;
+  outline: none !important;
+  transition: all 0.2s ease !important;
+}
+
+[data-theme="argon"] .center .txt_field input:focus {
+  border-color: #4834d4 !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(72, 52, 212, 0.15) !important;
+}
+
+/* Argon Dual Action Buttons */
+[data-theme="argon"] .login-btn-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+[data-theme="argon"] .login-btn-row input[type=submit] {
+  flex: 1;
+  margin-bottom: 0;
+  border-radius: 8px;
+  height: 44px;
+  font-size: 15px;
+  font-weight: 500;
+  background: linear-gradient(135deg, #4834d4, #686de0);
+  box-shadow: 0 2px 6px rgba(72, 52, 212, 0.25);
+  cursor: pointer;
+}
+
+[data-theme="argon"] .login-btn-row input[type=submit]:hover {
+  background: linear-gradient(135deg, #3c2bb7, #5358cb);
+  box-shadow: 0 4px 12px rgba(72, 52, 212, 0.35);
+}
+
+[data-theme="argon"] .login-btn-row .reset-btn {
+  flex: 1;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  height: 44px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: none;
+  transition: all 0.2s ease;
+}
+
+[data-theme="argon"] .login-btn-row .reset-btn:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+  box-shadow: none;
+}
+
+/* ==========================================================================
+   Argon Modern High-Contrast Tooltip Styles (Port Hover)
+   ========================================================================== */
+[data-theme="argon"] .tooltiptext {
+  background: rgba(15, 23, 42, 0.95) !important;
+  color: #f8fafc !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.12) !important;
+  padding: 10px 14px !important;
+  backdrop-filter: blur(10px) !important;
+  width: 280px !important;
+  margin-left: -140px !important;
+}
+
+[data-theme="argon"] .tooltiptext::after {
+  border-color: transparent transparent rgba(15, 23, 42, 0.95) transparent !important;
+}
+
+[data-theme="argon"] .tt_table {
+  border: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  background: transparent !important;
+  width: 100% !important;
+}
+
+[data-theme="argon"] .tt_table tr {
+  background: transparent !important;
+}
+
+[data-theme="argon"] .tt_table td {
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding: 6px 4px !important;
+  font-size: 13px !important;
+  color: #f1f5f9 !important;
+  text-align: left !important;
+}
+
+[data-theme="argon"] .tt_table tr:last-child td {
+  border-bottom: none !important;
+}
+
+[data-theme="argon"] .tt_table td:first-child {
+  color: #94a3b8 !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+  width: 38% !important;
+}
+
+[data-theme="argon"] .tt_table td:nth-child(2) {
+  color: #64748b !important;
+  width: 12px !important;
+  text-align: center !important;
+}
+
+[data-theme="argon"] .tt_table td:last-child {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+

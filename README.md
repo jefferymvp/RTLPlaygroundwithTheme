@@ -1,362 +1,139 @@
-# RTLPlayground
-A Playground for Firmware development for advanced user of RTL8372/RTL8373 based 2.5GBit Switches.
+# RTLPlayground with Theme
 
-For each hardware configuration of these devices, there is usually a managed and an
-umanaged version sold, with mostly identical hardware. The aim is to provide management
-features also for unmanaged devices with additional features such as Management VLAN,
-dhcp servers, multi-language support, IPv6 and TLS-encrypted web-pages. At present, however
-only the following features are provided:
-- A modern web-interface with mouse-over to display further information
-- A serial console interface to configure all features
-- IGMP to configure Multicast streaming
-- Port configuration showing detailed informtion about own and Link-partner advertised
-  Speed settins and configuration of these settings on the local side
-- Per-port configuration of frame sizes (MTUs) for Jumbo-Frame support or limiting MTUs
-  for particular devices
-- EEE (Energy Efficient Ethernet) can be configured per-port. Detailed information is
-  provided for support offered by the link partner and the EEE status of a port.
-- VLAN configuration
-- SFP information is displayed on the inserted modules, the current sensor values such as
-  temperatures, RX and TX power are displayed in the CLI and as mouse-over on the web
-- Mirror configuration
-- Link Aggregation Groups can be set up
-- Detailed information on port packet statistics
-- Configuration saved to flash via the web-interface
-- Firmware updates via the web
-- Installation as a firmware upgrade from the original web-interface
+本项目是基于 Realtek RTL8372/RTL8373 交换机开源固件平台 [RTLPlayground](https://github.com/logicog/RTLPlayground) 的**现代主题与体验增强版**。
 
-<img width="1420" height="623" alt="GUI" src="doc/images/gui.png" />
+在保留官方原生所有网管功能（VLAN、LACP 链路聚合、端口镜像、SFP+ DDM 状态监控、IGMP Snooping、STP 等）的基础上，重构升级了前端交互，引入全新的 **Argon 现代设计主题**，并提供**双主题实时热切换**与**上游源仓库一键补丁工具**。
 
-While the firmware provides already considerable improvements over the original managed firmware,
-the firmware still lacks support for the proprietary loop prevention
-protocols as well as DHCP. Spanning Tree is available (see doc/stp.md), but is
-a simplified implementation - read that document before enabling it on a
-switch you administer over the network. If you need these features, do not install the playground on your managed
-devices. In any case, installation is strongly discouraged unless you can at least make
-a backup of the original flash content via a SOIC clamp such as also used for BIOS
-backups and can re-install that firmware in case something is wrong. For this no soldering
-skills are necessary.
+---
 
-The firmware supports all hardware featues of devices with
-- 4 2.5GBit ports + 2 SFP+ ports
-- 5 2.5GBIT + 1 SFP+ port
-- 8 2.5GBit + 1 SFP+ port
-Devices sold usually have a fairly common design, however there may be differences in the LED
-configuration (switches have LEDs with different colours and use types of LEDs). The list
-of tested devices can be found in [Supported devices](doc/supported_devices.md).
+## ✨ 核心特性
 
-To do meaningful development you will need to use a serial console, so soldering skills
-are required. Flashing must be done via a SOIC-8 PatchClamp or by soldering a socket
-for the flash chip.
+- **Argon 现代主题**：暗色渐变顶栏、卡片化布局、精致现代字体、高对比度微磨砂悬浮 Tooltip 气泡与全新登录鉴权界面。
+- **双主题无缝切换**：在 Web 顶栏及登录页可随时在 **经典原版 (Default)** 与 **现代主题 (Argon)** 之间秒级切换，偏好配置持久化存储。
+- **汉化与交互体验优化**：全面汉化与精简系统设置、升级页和端口指示交互。
+- **零硬件本地仿真服务器**：提供基于 Python 的轻量仿真服务（`tools/sim_server.py`），无需刷机编译即可 1:1 本地预览 WebUI。
+- **一键补丁工具**：随时随地为官方源仓库或其他派生固件打上主题补丁，并支持一键无损还原。
 
-If you don't want to open your device, you can use the project's code to learn about the
-devices by looking at the image using e.g. Ghidra. If you want to contribute to the
-design of the web-interface or get a feeling for the interface first, a standalone
-device simulator is provided, which runs entirely under Linux as a local webserver.
+![Argon Theme Preview](doc/images/argon_theme.png)
 
-## (0) Compiling Requirements
+---
 
-Install the following particular build requisites (Debian 12/13), note that Ubuntu 24.04
-still has an older version of sdcc, but you will need sdcc version 4.5 for the code to compile:
+## 🛠️ 一键补丁工具 (Theme Patch Tool)
+
+为了让使用官方上游仓库（`logicog/RTLPlayground`）或其他分支的用户无需手动移植代码，本项目在 `tools/` 目录下提供了全自动的一键补丁系统。
+
+### 工具文件清单
+
+| 文件 | 说明 |
+| :--- | :--- |
+| `tools/apply_theme_patch.bat` | **Windows 批处理引导**：双击即可自动启动 PowerShell 补丁工具 |
+| `tools/apply_theme_patch.ps1` | **核心补丁管理脚本**：支持菜单交互式操作、自动备份与一键还原 |
+| `tools/argon_theme.patch` | **Git 标准补丁文件**：针对上游官方最新代码生成的标准 Patch |
+| `tools/argon_theme/` | **离线静态资源包**：包含已打包的主题前端文件，免 Git 环境直接应用 |
+| `tools/sim_server.py` | **本地仿真测试服务器**：无需交换机硬件即可本地运行调试 Web 界面 |
+
+### 使用方法
+
+#### 方式一：Windows 用户双击运行（推荐）
+直接在资源管理器中双击 **`tools/apply_theme_patch.bat`**，按提示输入目标仓库路径（若在本仓库内直接回车即可）。
+
+#### 方式二：PowerShell 终端执行
+```powershell
+# 交互式运行（自动引导输入目标路径）
+pwsh ./tools/apply_theme_patch.ps1
+
+# 或直接在参数中指定目标 RTLPlayground 仓库根目录：
+pwsh ./tools/apply_theme_patch.ps1 "D:\develop\RTLPlayground"
 ```
+
+#### 菜单功能说明：
+1. **[推荐] 一键应用 Argon 现代主题**：安全替换 `html/main.js` 和 `html/style.css`，自动将原版文件备份为 `.bak`，支持跨版本及非 Git 目录。
+2. **使用 Git Patch 补丁应用**：通过 `git apply` 将 `argon_theme.patch` 打入干净的 Git 分支。
+3. **一键还原官方原版**：从 `.bak` 备份或 Git 树快速撤销所有主题改动，恢复为官方原生纯净状态。
+4. **启动本地模拟服务器**：一键拉起本地仿真服务器（端口 8088）并自动打开浏览器预览。
+
+#### 方式三：纯 Git 命令行打补丁
+在任何标准的 RTLPlayground 仓库根目录下执行：
+```bash
+git apply tools/argon_theme.patch
+```
+
+---
+
+## 🔨 固件编译指南
+
+### 1. 编译环境准备
+
+#### Linux (Debian 12/13 或 Ubuntu 24.04+):
+```bash
+sudo apt update
 sudo apt install make gcc sdcc xxd python-is-python3 libjson-c-dev
 ```
+> **注意**：SDCC 编译器要求版本在 4.5 及以上。
 
-<details>
-<summary>If using Docker (click to expand)</summary>
-
-### Prerequisites
-
-Install Docker for your platform:
-
-- **Linux (Debian/Ubuntu)**: `sudo apt install docker.io` then `sudo usermod -aG docker $USER` (log out and back in)
-- **Linux (other distros)**: Follow the [Docker Engine install guide](https://docs.docker.com/engine/install/)
-- **Windows**: Install [Docker Desktop for Windows](https://docs.docker.com/desktop/setup/install/windows-install/)
-- **macOS**: Install [Docker Desktop for Mac](https://docs.docker.com/desktop/setup/install/mac-install/)
-
-### Usage
-
-A Dockerfile is provided for a reproducible build environment:
-
-```
+#### Docker 容器化构建（跨平台，无需配置本地依赖）：
+```bash
+# 构建构建镜像
 docker build -t rtlplayground-dev .
-```
 
-Build the firmware (replace MACHINE with your target, e.g. `DEFAULT_8C_1SFP`):
-
-```
+# 编译固件（以 DEFAULT_8C_1SFP 为例）
 docker run --rm -v $(pwd):/workspace rtlplayground-dev make MACHINE=DEFAULT_8C_1SFP
 ```
 
-The resulting `.bin` file appears in `output/` on your host.
-
-Build host tools only:
-
-```
-docker run --rm -v $(pwd):/workspace rtlplayground-dev make -C tools
-```
-
-Run the web-interface simulator locally:
-
-```
-docker run --rm -p 8080:8080 -v $(pwd):/workspace rtlplayground-dev \
-  tools/output/httpd_sim /workspace/html
-```
-
-Edit `machine.h` or `config.txt` on your host, then re-run `make` — the
-source directory is mounted into the container, so changes take effect
-immediately. To build for a different machine, pass `MACHINE=...`.
-
-</details>
-
-## (1) Compiling for direct chip flashing AND upgrading an existing RTLPlayground running device
-
-Edit machine.h with an editor like vi or nano. Select the correct machine the firmware should build for.
-
-> [!TIP]
-> You can write configuration parameters in config.txt (see below) in order your switch to get
-> straight at the first boot, a correct IP configuration.
-
-Now, building the firmware image should work:
-```
-make 
-```
-Note, that the image generated ends in .bin, not .img, in order to make IMSProg happy.
-
-image location is stored in `RTLPlayground/output/rtlplayground_version_machine.bin`
-for example
-```
-rtlplayground-v0.1.0-12c98ba-dirty-LIANGUO_ZX_SWTGW215AS.bin
-```
-
-> [!CAUTION]
-> This image can be flashed directly to the chip OR through the firmware update/upgrade
-> interface of RTLPlaygound interface
-
-## (2) Compiling for OEM running device with management options (web upgrade)
-
-Managed switches can be updated from the existing original firmware using a SPECIFIC upgrade image.
-You first need to build the firmware for direct chip flashing : See below (1)
-
-Then
-
-```
-cd installer
-make 
-```
-image location is stored in  `RTLPlayground/installer/output/rtlplayground_oem_upgrade.bin`
-
-> [!CAUTION]
-> This image must ONLY be used for original OEM firmware web interface firmware upgrade.
-> You do not need this image if you are already on RTLplayground firmware.
-> Unless you go back to the original OEM firmware, you would only flash this specific firmware
-> only once. Future upgrades of RTLPlayground will only need to follow (1)
-
-example of compilation console output
-
-```
-RTLPlayground/installer$ make
-mkdir -p output
-gcc updatebuilder.c -o output/updatebuilder
-sdas8051 -plosgff -o output/crtstart.rel crtstart.asm
-sdcc -mmcs51 --code-loc 0x1000 -o output/installer.rel -c installer.c
-sdcc -mmcs51 -Wl-bHOME=0x1100 -Wl-r -o output/rtlinstaller.ihx output/crtstart.rel output/installer.rel
-./output/updatebuilder -i output/rtlinstaller.ihx -o output/rtlplayground_oem_upgrade.bin ../output/rtlplayground.bin
-Input file size: 524288
-Bytes read: 524288
-EOF
-Payload sum 1 is: 0x25100
-Payload sum 2 is: 0x25100
-Payload sum with header is: 0x264ec
-Payload sum is: 0xf8fe94
-Header checksum is: 0x5a1
-```
-
-## (3) Sandbox Usage with Ghidra (optional)
-
-You can play with the image using ghidra or flash real Switch Hardware. For
-ghidra see this information about [Ghidra images](ghidra.md).
-
-## (4) Installation through the Web interface (software way)
-
-Managed switches (OEM firmware of RTLplaygroud firmware) can be upgraded via the web interface.
-Unmanaged switch cannot be flashed this way (see 5).
-
-Go to "Firmware update" tab, select the correct file.
-
-> [!IMPORTANT]
-> If your device already runs RTLPlayground, you must upload the binary file /RTLPlayground/output/rtlplayground_Version_Machine.bin
-> If your device is OEM, you must upload the binary file /RTLPlayground/installer/outputrtlplayground_oem_upgrade.bin
-
-> [!CAUTION]
-> Check one more time that your device matches the machine type before flashing.
-> Be shure you have a backup of the original firmware before diving in RTLPlaygroung.
-
-Finally, push the Upload File Button and you're done !
-
-
-## (5) Flashing the ROM directly (hardware way, but also only way to rescue)
-
-This procedure is the only way to flash unmanaged switches, if the ROM chip is large enough.
-This is also the only way to unbrick your device if something went wroong.
-
-> [!IMPORTANT]
-> You need a SOIC-8 clip to flash the ROM chip directly onboard.
-> Alternatively you can de-solder the flash chip and install a SOIC adapter).
-> For flashing the chip directly, you must use the binary file /RTLPlayground/output/rtlplayground_Version_Machine.bin
-
-> [!CAUTION]
-> As you need to open your switch case, consider that the warranty is gone.
-
-- Disconnect power from switch.
-- Open the switch.
-- Attach the clip onto the flash chip (Red line on Pin 1, Pin 1 has a point marker).
-- Connect USB of flash programmer, the power LED on the switch will light up, check cabling if not.
-- Don't panic, mixing up GND and 3.3V usually does not destroy the switch.
-- Use IMSProg, Flashrom, or whatever Programmer to detect the chip.
-- MAKE A BACKUP (DUMP) OF THE EXISTING FIRMWARE !
-- ERASE THE ROM (BLANK) !
-- Load the firmware into IMSProg.
-- Flash is to the ROM chip.
-- Disconect the clip from the ROM chip.
-- You're done, ready for the first boot.
-
-## (6) Connecting a serial interface (optional)
-
-You can connect a serial cable to the UART port found on all the devices, set 8N1 @ 115200 baud.
-
-## (7) Power Up
-
-When you power up the switch, the device will perform some examples and provide a minimal console
-(if wired to a serial interface), the documentation of which can be found in the source code rtlplayground.c`.
-
-## (8) The web-interface
-
-The web-interface can be reached under the [default 192.168.10.247](http://192.168.10.247) unless you
-specified an IP adress in the config.txt before compilation.
-
-> [!TIP]
-> The default password is `1234`.
-
-## (9) The command line
-
-The command line is very rudimentary and mostly for testing purposes.
-The following is a boot-log with some examples:
-```
-Detecting CPU
-RTL8373 detected
-Starting up...
-  Flash controller
-
-NIC reset
-rtl8372_init called
-
-RTL837X_REG_SDS_MODES: 0x00000bed
-
-phy_config_8224 called
-
-phy_config_8224 done
-
-rtl8224_phy_enable called
-
-rtl8224_phy_enable done
-
-rtl8372_init done
-
-A minimal prompt to explore the RTL8372:
-
-CPU detected: RTL8373
-Clock register: 0x00001101
-Register 0x7b20/RTL837X_REG_SDS_MODES: 0x00000bed
-Verifying PHY settings:
-
- Port   State   Link    TxGood          TxBad           RxGood          RxBad
-1       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-2       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-3       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-4       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-5       On      2.5G    0x00000008      0x00000000      0x00000000      0x00000000
-6       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-7       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-8       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-9       NO SFP  Down    0x00000000      0x00000000      0x00000000      0x00000000
-
-> port 5 1g
-  CMD: port 5 1g
-PORT 04 1G
-
-> stat
-  CMD: stat
- Port   State   Link    TxGood          TxBad           RxGood          RxBad
-1       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-2       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-3       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-4       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-5       On      1000M   0x00000035      0x00000000      0x00000017      0x00000000
-6       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-7       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-8       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-9       NO SFP  Down    0x00000000      0x00000000      0x00000000      0x00000000
-
->
-<SFP-RX OK>
-
-<MODULE INSERTED>  Rate: 67  Encoding: 01
-Lightron Inc.   WSPXG-ES3LC-IHA 0000
-
-> stat
-  CMD: stat
- Port   State   Link    TxGood          TxBad           RxGood          RxBad
-1       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-2       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-3       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-4       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-5       On      1000M   0x00000065      0x00000000      0x0000003b      0x00000000
-6       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-7       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-8       On      Down    0x00000000      0x00000000      0x00000000      0x00000000
-9       SFP OK  10G     0x00000000      0x00000000      0x0000001c      0x00000000
-
-> sfp
-  CMD: sfp
-Rate: 67  Encoding: 01
-Lightron Inc.   WSPXG-ES3LC-IHA 0000
-```
-
-## (10) Advanced configuration
-
-You can configure more deeply the switch without the need of the console mode.
-
-While in compilation part, you might write directly to config.txt file before making the binary firmware
-
-```
-nano config.txt
-```
-
-If you want to modify settings after the flash is done, go to the Advanced Settings tab in System Settings
-
-<img width="1085" height="646" alt="ADVANCED SETTINGS" src="doc/images/advanced_settings.png" />
-
-```
-ip xxx.xxx.xxx.xxx      = IP adress of the switch
-gw yyy.yyy.yyy.yyy      = IP adress of the gateway
-netmask zzz.zzz.zzz.zzz = Network mask of the switch 
-port x name xxx         = Name xxx the port number x
-port z 1g               = Set 1g speed for port z
-igmp on/off             = Turn IGMP on or off
-```
-[To be continue]
-
-Enjoy playing!
-
-## (11) Other documents
-
-The following documents give further documentation on specific features of the RTL837x SoCs:
-- [RTL8372/3 Feature support](doc/hardware.md)
-- [CPU Port](doc/CpuPort.md)
-- [L2 learning](doc/l2.md) 
-- [IGMP (IP-MC streaming)](doc/igmp.md)
-- [SFP+ ports](doc/sfp.md) 
-- [Trunking aka. port aggregation](doc/trunking.md)
-- [VLAN](doc/vlan.md)
-- [Modifications and Flash replacement](doc/mods.md)
+### 2. 硬件与网络预设
+
+- **选择机型**：编辑 `machine.h`，取消注释与您交换机硬件相匹配的型号宏定义（如 `LIANGUO_ZX_SWTGW215AS`、`DEFAULT_8C_1SFP` 等，详见 [支持设备列表](doc/supported_devices.md)）。
+- **预设网络参数**：编辑 `config.txt`，设置交换机首次开机默认 IP，避免与主路由冲突：
+  ```ini
+  ip 192.168.6.100
+  gw 192.168.6.1
+  netmask 255.255.255.0
+  ```
+
+### 3. 执行编译
+
+- **常规直接刷机 / 原生升级包**：
+  ```bash
+  make
+  ```
+  产物生成在 `output/rtlplayground_<版本>_<机型>.bin`。
+
+- **原厂 OEM 固件 Web 升级专用包**（仅针对尚未刷入开源固件的原厂管理固件）：
+  ```bash
+  cd installer
+  make
+  ```
+  产物生成在 `installer/output/rtlplayground_oem_upgrade.bin`。
+
+---
+
+## ⚡ 刷机与升级方式
+
+1. **Web 页面在线升级（软件方式）**：
+   - 如果当前已经是 RTLPlayground 固件：在网页的 **固件升级 (Firmware Update)** 页面上传 `output/rtlplayground_*.bin`。
+   - 如果当前是原厂 OEM 管理固件：上传 `installer/output/rtlplayground_oem_upgrade.bin`。
+2. **SOIC-8 夹子编程器直刷（硬件方式 / 救砖）**：
+   - 适用于非网管机型升级、或设备刷砖救援。
+   - 断开电源，拆开交换机外壳，使用编程器（如 CH341A / T48 + IMSProg / Flashrom）夹住 Flash 芯片。
+   - **务必先完整备份原机 ROM 固件**，清空后写入编译好的 `output/rtlplayground_*.bin`。
+
+---
+
+## 🌐 访问与使用
+
+- **默认后台地址**：编译前在 `config.txt` 中指定的 IP（若未修改，官方默认通常为 `192.168.10.247`）。
+- **默认登录密码**：`1234`
+- **串口控制台调试**：板载 UART 引脚，波特率 `115200`，`8N1`。
+
+---
+
+## 📖 深入参考文档
+
+- [支持设备硬件型号清单](doc/supported_devices.md)
+- [RTL8372/RTL8373 硬件芯片特性](doc/hardware.md)
+- [VLAN 配置详解](doc/vlan.md)
+- [STP 生成树协议使用规范](doc/stp.md)
+- [SFP+ 光口状态与 DDM 信息](doc/sfp.md)
+- [链路聚合 (Trunk / LAG)](doc/trunking.md)
+- [硬件改装与 Flash 芯片扩容](doc/mods.md)
+- [Ghidra 固件逆向分析](doc/ghidra.md)
