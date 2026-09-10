@@ -1,11 +1,28 @@
-name: Build firmware
+name: Build and Release Firmware
 
 on:
   push:
     branches: ['**']
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      create_release:
+        description: '是否直接发布为 GitHub Release'
+        required: false
+        type: boolean
+        default: true
+      release_tag:
+        description: 'Release 版本号（如 v0.1.0-argon）'
+        required: false
+        type: string
+        default: 'v0.1.0-argon'
+
+permissions:
+  contents: write
 
 jobs:
   build:
+    name: Build FG_4GT_2SX_V2_0 Firmware
     runs-on: ubuntu-latest
     container:
       image: debian:trixie
@@ -17,7 +34,57 @@ jobs:
         run: |
           apt update
           apt install make gcc sdcc xxd python-is-python3 libjson-c-dev zlib1g-dev -y
+
       - name: Check if machine.c can be compiled for all machines
         run: make machine_check
-      - name: Make project
-        run: make MACHINE="KP_9000_6XHML_X2"
+
+      - name: Build Firmware (FG_4GT_2SX_V2_0)
+        run: |
+          # 1. 编译基础固件
+          make MACHINE="FG_4GT_2SX_V2_0"
+          # 2. 编译原厂 OEM Web 固件升级包
+          make -C installer
+
+      - name: Organize Firmware Assets
+        run: |
+          mkdir -p release_assets
+          # 复制常规固件（用于已刷 RTLPlayground 升级或编程器夹子刷机）
+          cp output/rtlplayground.bin release_assets/rtlplayground_FG_4GT_2SX_V2_0.bin
+          # 复制 OEM 原厂固件升级包（用于原厂管理界面直接升级）
+          if [ -f installer/output/rtlplayground_oem_upgrade.bin ]; then
+            cp installer/output/rtlplayground_oem_upgrade.bin release_assets/rtlplayground_oem_upgrade_FG_4GT_2SX_V2_0.bin
+          fi
+          echo "=== 待发布的固件列表 ==="
+          ls -lh release_assets/
+
+      - name: Upload Firmware Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: RTLPlayground_FG_4GT_2SX_V2_0_Firmware
+          path: release_assets/*
+          retention-days: 30
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/') || (github.event_name == 'workflow_dispatch' && inputs.create_release == true)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || inputs.release_tag }}
+          name: "RTLPlayground Argon Theme - ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || inputs.release_tag }}"
+          body: |
+            ## 🌟 RTLPlayground with Argon Theme 固件发布
+
+            本固件已预装 **Argon 现代主题** 与 **双主题平滑切换引擎**，专为 **FG-4GT-2SX V2.0** 交换机编译生成。
+
+            ### 📦 包含固件文件说明：
+            - **`rtlplayground_FG_4GT_2SX_V2_0.bin`**：
+              - **适用场景**：已刷入 RTLPlayground 固件的在线升级，或使用 SOIC-8 夹子编程器断电直刷。
+            - **`rtlplayground_oem_upgrade_FG_4GT_2SX_V2_0.bin`**：
+              - **适用场景**：当前仍为**原厂 OEM 管理固件**时，直接在原厂网页后台的“固件升级”页面上传刷入。
+
+            ### 🌐 默认连接信息：
+            - 预设 IP：请以编译时 `config.txt` 为准（默认 `192.168.6.100` 或 `192.168.10.247`）
+            - 默认密码：`1234`
+          files: release_assets/*
+          generate_release_notes: false
+          draft: false
+          prerelease: false
