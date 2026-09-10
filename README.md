@@ -69,7 +69,7 @@ git apply tools/argon_theme.patch
 #### Linux (Debian 12/13 或 Ubuntu 24.04+):
 ```bash
 sudo apt update
-sudo apt install make gcc sdcc xxd python-is-python3 libjson-c-dev
+sudo apt install make gcc sdcc xxd python-is-python3 libjson-c-dev zlib1g-dev
 ```
 > **注意**：SDCC 编译器要求版本在 4.5 及以上。
 

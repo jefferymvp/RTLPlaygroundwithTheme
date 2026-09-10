@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     xxd \
     python3 \
     libjson-c-dev \
+    zlib1g-dev \
     git \
     && rm -rf /var/lib/apt/lists/*
 
