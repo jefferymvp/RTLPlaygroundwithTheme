@@ -22,6 +22,8 @@
 
 为了让使用官方上游仓库（`logicog/RTLPlayground`）或其他分支的用户无需手动移植代码，本项目在 `tools/` 目录下提供了全自动的一键补丁系统。
 
+> 💡 详细功能与 FAQ 排查可查阅：[Argon 主题补丁使用指南](doc/rtlPlayground固件界面argon主题补丁使用指南.md)。
+
 ### 工具文件清单
 
 | 文件 | 说明 |
@@ -130,6 +132,7 @@ docker run --rm -v $(pwd):/workspace rtlplayground-dev make MACHINE=DEFAULT_8C_1
 ## 📖 深入参考文档
 
 - [支持设备硬件型号清单](doc/supported_devices.md)
+- [Argon 现代双主题一键补丁使用指南](doc/rtlPlayground固件界面argon主题补丁使用指南.md)
 - [RTL8372/RTL8373 硬件芯片特性](doc/hardware.md)
 - [VLAN 配置详解](doc/vlan.md)
 - [STP 生成树协议使用规范](doc/stp.md)
