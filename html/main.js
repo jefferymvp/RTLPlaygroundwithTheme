@@ -180,6 +180,13 @@ var LANG = {
     login_wrong: 'Wrong password!',
     login_password: 'Password',
     login_login: 'Login',
+    login_reset: 'Reset',
+    login_auth: 'Authorization Required',
+    login_desc: 'Please enter password.',
+    theme_label: 'Theme',
+    theme_default: 'Default',
+    theme_argon: 'Argon',
+    nav_logout: 'Logout',
 
     index_title: 'FreeSwitchOS Main Page',
     index_heading: 'Switch Configuration',
@@ -531,10 +538,10 @@ var LANG = {
     sys_netmask: '子网掩码:',
     sys_gateway: '网关:',
     sys_language: '语言:',
-    sys_mgmt_vlan: 'Management VLAN:',
-    sys_mgmt_untagged: 'untagged',
-    sys_mgmt_confirm: 'Move switch management to VLAN ',
-    sys_mgmt_warn: 'The switch will start tagging its own traffic with that VLAN. If the port you are connected through does not carry it, this page becomes unreachable and the setting can only be undone over the console. Continue?',
+    sys_mgmt_vlan: '管理 VLAN:',
+    sys_mgmt_untagged: '未打标 (untagged)',
+    sys_mgmt_confirm: '将交换机管理迁移至 VLAN ',
+    sys_mgmt_warn: '交换机将开始对其自身流量打上该 VLAN 标签。如果您当前连接的端口未承载该 VLAN，本管理页面将无法访问，且该设置只能通过控制台控制口撤销。是否继续？',
     sys_ip_note: '更新上述设置后，请使用新的 IP 地址重新访问管理界面:',
     sys_update: '更新设置',
     sys_save_label: '将当前全部设置保存到 Flash:',
@@ -558,6 +565,13 @@ var LANG = {
     login_wrong: '密码错误!',
     login_password: '密码',
     login_login: '登录',
+    login_reset: '复位',
+    login_auth: '需要授权',
+    login_desc: '请输入密码。',
+    theme_label: '主题',
+    theme_default: '默认',
+    theme_argon: 'Argon',
+    nav_logout: '注销',
 
     index_title: 'FreeSwitchOS 主页',
     index_heading: '交换机配置',
@@ -968,6 +982,9 @@ window.addEventListener('hashchange', function() {
 
 document.addEventListener('DOMContentLoaded', function() {
   if (!document.getElementById('page-overview')) return; // not index.html (e.g. login.html)
+  if (!numPorts) {
+    update();
+  }
   showSection((location.hash || '#/overview').replace(/^#\//, ''));
 });
 
@@ -2837,3 +2854,162 @@ function walkL2(onDone)
 
   page();
 }
+
+/* ==========================================================================
+   Argon Theme Manager & Auto-Mount System (Zero HTML Modification)
+   ========================================================================== */
+
+(function() {
+  var saved = localStorage.getItem('switch_theme') || 'default';
+  document.documentElement.setAttribute('data-theme', saved);
+  if (document.body) document.body.setAttribute('data-theme', saved);
+})();
+
+window.getTheme = function() {
+  return localStorage.getItem('switch_theme') || 'default';
+};
+
+window.setTheme = function(theme) {
+  if (theme !== 'argon' && theme !== 'default') theme = 'default';
+  localStorage.setItem('switch_theme', theme);
+  document.documentElement.setAttribute('data-theme', theme);
+  if (document.body) document.body.setAttribute('data-theme', theme);
+
+  document.querySelectorAll('.theme-select').forEach(function(el) {
+    el.value = theme;
+  });
+
+  updateLoginPageAppearance(theme);
+};
+
+function updateLoginPageAppearance(theme) {
+  var center = document.querySelector('.center');
+  if (!center) return;
+
+  var resetBtn = document.getElementById('argon-reset-btn');
+  if (theme === 'argon') {
+    if (!resetBtn) {
+      var submitBtn = center.querySelector('input[type="submit"]');
+      if (submitBtn) {
+        var row = document.createElement('div');
+        row.className = 'login-btn-row';
+        submitBtn.parentNode.insertBefore(row, submitBtn);
+        row.appendChild(submitBtn);
+
+        var rBtn = document.createElement('button');
+        rBtn.type = 'button';
+        rBtn.id = 'argon-reset-btn';
+        rBtn.className = 'reset-btn';
+        rBtn.textContent = t('login_reset') || 'Reset';
+        rBtn.onclick = function() {
+          var pwd = center.querySelector('input[name="pwd"]');
+          if (pwd) pwd.value = '';
+          var inc = document.getElementById('incorrect');
+          if (inc) inc.innerHTML = '';
+        };
+        row.appendChild(rBtn);
+      }
+    }
+  } else {
+    // Default 模式：若存在双按钮行，还原为原生单个全宽按钮
+    var btnRow = center.querySelector('.login-btn-row');
+    if (btnRow) {
+      var subBtn = btnRow.querySelector('input[type="submit"]');
+      var rBtn = document.getElementById('argon-reset-btn');
+      if (rBtn) rBtn.remove();
+      if (subBtn) {
+        btnRow.parentNode.insertBefore(subBtn, btnRow);
+        btnRow.remove();
+      }
+    }
+  }
+}
+
+function mountLoginThemeBar() {
+  var center = document.querySelector('.center');
+  if (!center || document.getElementById('login-theme-bar')) return;
+
+  var bar = document.createElement('div');
+  bar.id = 'login-theme-bar';
+  bar.className = 'login-theme-bar';
+
+  var label = document.createElement('label');
+  label.textContent = (t('theme_label') || 'Theme') + ':';
+  bar.appendChild(label);
+
+  var select = document.createElement('select');
+  select.className = 'theme-select';
+  select.onchange = function() { setTheme(this.value); };
+
+  var optDefault = document.createElement('option');
+  optDefault.value = 'default';
+  optDefault.textContent = t('theme_default') || 'Default';
+  select.appendChild(optDefault);
+
+  var optArgon = document.createElement('option');
+  optArgon.value = 'argon';
+  optArgon.textContent = t('theme_argon') || 'Argon';
+  select.appendChild(optArgon);
+
+  select.value = getTheme();
+  bar.appendChild(select);
+
+  center.insertBefore(bar, center.firstChild);
+  updateLoginPageAppearance(getTheme());
+}
+
+function mountIndexTopbar() {
+  var overviewPage = document.getElementById('page-overview');
+  if (!overviewPage || document.getElementById('topbar')) return;
+
+  var topbar = document.createElement('header');
+  topbar.id = 'topbar';
+
+  topbar.innerHTML =
+    '<div class="topbar-brand">' +
+      '<img src="switch.svg" alt="Logo">' +
+      '<span>FreeSwitchOS</span>' +
+    '</div>' +
+    '<div class="topbar-actions">' +
+      '<div class="theme-select-wrapper">' +
+        '<label>' + (t('theme_label') || 'Theme') + ':</label>' +
+        '<select class="theme-select" onchange="setTheme(this.value)">' +
+          '<option value="default">' + (t('theme_default') || 'Default') + '</option>' +
+          '<option value="argon">' + (t('theme_argon') || 'Argon') + '</option>' +
+        '</select>' +
+      '</div>' +
+      '<a href="login.html" class="logout-btn">' + (t('nav_logout') || 'Logout') + '</a>' +
+    '</div>';
+
+  document.body.insertBefore(topbar, document.body.firstChild);
+
+  var sel = topbar.querySelector('.theme-select');
+  if (sel) sel.value = getTheme();
+}
+
+function updateSidebarActiveLink() {
+  var hash = location.hash || '#/overview';
+  var links = document.querySelectorAll('#sidebar a');
+  links.forEach(function(link) {
+    if (link.getAttribute('href') === hash) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  setTheme(getTheme());
+
+  if (document.querySelector('.login_page') || document.querySelector('.center')) {
+    mountLoginThemeBar();
+  }
+
+  if (document.getElementById('page-overview')) {
+    mountIndexTopbar();
+    updateSidebarActiveLink();
+    window.addEventListener('hashchange', updateSidebarActiveLink);
+  }
+});
+
